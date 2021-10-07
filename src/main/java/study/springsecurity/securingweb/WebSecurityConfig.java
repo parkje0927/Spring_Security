@@ -1,7 +1,6 @@
 package study.springsecurity.securingweb;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,8 +8,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import study.springsecurity.service.MemberService;
+import study.springsecurity.service.UserService;
 
 @RequiredArgsConstructor
 @Configuration
@@ -25,12 +23,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      * - WebSecurityConfigureAdapter 는 Spring Security 의 설정 파일로서의 역할을 하기 위해 상속해야 하는 클래스
      */
 
-    private final MemberService memberService;
-
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    private final UserService userService;
 
     /**
      * public void configure(WebSecurity web)
@@ -60,24 +53,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests() //접근에 대한 인증 설정이 가능
-                .antMatchers("/**").permitAll() //누구나 접근 허용
-                .antMatchers("/member/myInfo").hasRole("MEMBER") //MEMBER, ADMIN 만 접근 가능
+                .antMatchers("/login", "/signup", "/user").permitAll() //누구나 접근 허용
+                .antMatchers("/").hasRole("USER") //USER, ADMIN 만 접근 가능
                 .antMatchers("/admin").hasRole("ADMIN") //ADMIN 만 접근 가능
                 .anyRequest().authenticated() //나머지 요청들은 권한의 종류에 강관 없이 권한이 있어야 접근 가능
                 .and()
 
                 .formLogin()
-                .loginPage("/member/login") //로그인 페이지 링크
-                .defaultSuccessUrl("/member/login/result") //로그인 성공 후 리다이렉트 주소
+                .loginPage("/login") //로그인 페이지 링크
+                .defaultSuccessUrl("/") //로그인 성공 후 리다이렉트 주소
                 .and()
 
                 .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/member/logout"))
-                .logoutSuccessUrl("/member/logout/result") //로그아웃 성공시 리다이렉트 주소
+                .logoutSuccessUrl("/login") //로그아웃 성공시 리다이렉트 주소
                 .invalidateHttpSession(true) //세션 날리기
-                .and()
-
-                .exceptionHandling().accessDeniedPage("/member/denied")
                 .and()
 
                 .csrf()
@@ -93,11 +82,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         //해당 서비스(userService) 에서는 UserDetailsService 를 implements 해서 loadUserByUserName() 구현해야 함.
-        auth.userDetailsService(memberService).passwordEncoder(passwordEncoder());
+        auth
+                .userDetailsService(userService)
+                .passwordEncoder(new BCryptPasswordEncoder());
     }
 
 //    @Bean
-//    RestAuthenticationFailureHandler authenticationFailureHandler() {
-//        return new RestAuthenticationFailureHandler();
+//    @Override
+//    protected UserDetailsService userDetailsService() {
+//        UserDetails user = User.withDefaultPasswordEncoder()
+//                .username("user")
+//                .password("password")
+//                .roles("USER")
+//                .build();
+//
+//        return new InMemoryUserDetailsManager(user);
 //    }
 }
