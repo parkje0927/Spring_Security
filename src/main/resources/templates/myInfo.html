@@ -2,10 +2,10 @@
 <!--<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">-->
 <!--<head>-->
 <!--    <meta charset="UTF-8">-->
-<!--    <title>Spring Security Admin</title>-->
+<!--    <title>Spring Security Home</title>-->
 <!--</head>-->
 <!--<body>-->
-<!--<h1>관리자 전용 페이지</h1>-->
+<!--<h1>회원 전용 페이지</h1>-->
 
 <!--ID : <span sec:authentication="name"></span> <br>-->
 <!--소유 권한 : <span sec:authentication="authorities"></span> <br>-->
@@ -21,11 +21,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>어드민</title>
+    <title>내정보</title>
 </head>
 <body>
-<h1>어드민 페이지입니다.</h1>
-<a th:href="@{'/'}">메인으로 이동</a>
+<h1>내정보 확인 페이지입니다.</h1>
 <hr>
+<a th:href="@{'/'}">메인으로 이동</a>
 </body>
 </html>

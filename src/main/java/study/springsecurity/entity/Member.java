@@ -14,7 +14,7 @@ import java.util.Set;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User implements UserDetails {
+public class Member implements UserDetails {
 
     /**
      * @GeneratedValue(자동 생성)
@@ -41,7 +41,8 @@ public class User implements UserDetails {
     private String auth;
 
     @Builder
-    public User(String email, String password, String auth) {
+    public Member(Long id, String email, String password, String auth) {
+        this.id = id;
         this.email = email;
         this.password = password;
         this.auth = auth;
