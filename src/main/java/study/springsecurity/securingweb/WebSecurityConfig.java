@@ -9,7 +9,9 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import study.springsecurity.security.CustomAuthenticationFailureHandler;
 import study.springsecurity.service.MemberService;
 
 @RequiredArgsConstructor
@@ -68,6 +70,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .formLogin()
                 .loginPage("/member/login") //로그인 페이지 링크
+                .failureHandler(authenticationFailureHandler())
                 .defaultSuccessUrl("/member/login/result") //로그인 성공 후 리다이렉트 주소
                 .and()
 
@@ -96,8 +99,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(memberService).passwordEncoder(passwordEncoder());
     }
 
-//    @Bean
-//    RestAuthenticationFailureHandler authenticationFailureHandler() {
-//        return new RestAuthenticationFailureHandler();
-//    }
+    @Bean
+    public AuthenticationFailureHandler authenticationFailureHandler() {
+        return new CustomAuthenticationFailureHandler();
+    }
 }

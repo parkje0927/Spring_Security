@@ -2,8 +2,11 @@ package study.springsecurity.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import study.springsecurity.dto.MemberDto;
 import study.springsecurity.service.MemberService;
 
@@ -35,6 +38,13 @@ public class MemberController {
     //로그인 페이지
     @GetMapping("/member/login")
     public String dispLogin() {
+        return "/login";
+    }
+
+    //로그인 실패 페이지
+    @PostMapping("/member/login")
+    public String loginFailure(@RequestParam("error") String error, Model model) {
+        System.out.println(model.getAttribute("username"));
         return "/login";
     }
 
