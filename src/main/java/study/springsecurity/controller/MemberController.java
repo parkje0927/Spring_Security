@@ -47,7 +47,7 @@ public class MemberController {
         System.out.println(model.getAttribute("username"));
         return "/login";
     }
-    
+
 
     //로그인 결과 페이지
     @GetMapping("/member/login/result")
